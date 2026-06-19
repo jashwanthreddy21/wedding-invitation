@@ -1,22 +1,13 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { RSVP } from '../types';
-import { Users, MapPin, CheckCircle, XCircle, Search, Download, Trash2, Shield, CalendarDays, Image as ImageIcon, Upload, RotateCcw, Music } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Users, MapPin, CheckCircle, XCircle, Search, Download, Trash2, Shield, CalendarDays } from 'lucide-react';
 
 interface HostDashboardProps {
   onRSVPUpdateTrigger?: number; // state value from parent to trigger lists reload
-  photos?: any[];
-  onPhotosChange?: (newPhotos: any[] | null) => void;
-  audioUrl?: string;
-  onAudioChange?: (newAudio: string | null) => void;
 }
 
 export default function HostDashboard({ 
-  onRSVPUpdateTrigger = 0,
-  photos = [],
-  onPhotosChange,
-  audioUrl = '',
-  onAudioChange
+  onRSVPUpdateTrigger = 0
 }: HostDashboardProps) {
   const [rsvps, setRsvps] = useState<RSVP[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +41,7 @@ export default function HostDashboard({
       setErrorMsg('');
       loadRSVPs();
     } else {
-      setErrorMsg('Invalid passcode! Try "Chinnu0107".');
+      setErrorMsg('Invalid passcode! Please try again.');
     }
   };
 
@@ -143,7 +134,7 @@ export default function HostDashboard({
                       type="password"
                       value={passcode}
                       onChange={(e) => setPasscode(e.target.value)}
-                      placeholder="Enter 'Chinnu0107'"
+                      placeholder="Enter passcode"
                       className="flex-1 text-xs border border-stone-300 rounded-lg px-3 py-2 bg-white text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#aa771c]"
                     />
                     <button
@@ -154,7 +145,6 @@ export default function HostDashboard({
                       Verify
                     </button>
                   </div>
-                  <span className="text-[10px] text-amber-600 italic">Hint: Enter <strong>Chinnu0107</strong> to enter</span>
                   {errorMsg && (
                     <p className="text-[11px] text-red-600 mt-1">{errorMsg}</p>
                   )}
@@ -274,254 +264,6 @@ export default function HostDashboard({
                   )}
                 </div>
 
-                {/* Photo Gallery Customizer inside Dashboard */}
-                <div className="border border-amber-200 bg-amber-50/45 rounded-xl p-4 mt-4 space-y-4">
-                  <div className="flex items-center justify-between border-b border-amber-200/50 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <ImageIcon className="w-4 h-4 text-[#aa771c]" />
-                      <h5 className="font-display text-[#4A0404] text-[11px] uppercase font-bold tracking-wider">
-                        ✨ Wedding Gallery Photo Customizer
-                      </h5>
-                    </div>
-                    <button
-                      type="button"
-                      id="reset-photos-btn"
-                      onClick={() => {
-                        if (window.confirm("Reset photos and captions back to default?")) {
-                          if (onPhotosChange) onPhotosChange(null);
-                        }
-                      }}
-                      className="inline-flex items-center gap-1 text-[9px] bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-0.5 rounded transition-colors font-medium border border-amber-200 cursor-pointer"
-                    >
-                      <RotateCcw className="w-2.5 h-2.5" /> Reset Defaults
-                    </button>
-                  </div>
-
-                  <p className="text-[10px] text-stone-600 leading-relaxed text-left">
-                    Modify the real-time photos showing on the invitation. You can <strong>upload your own photo files (Bride/Groom together)</strong> directly from your phone/device, or paste custom web links. They will immediately save and update on the website!
-                  </p>
-
-                  <div className="space-y-4">
-                    {photos.map((photo, i) => (
-                      <div key={i} className="bg-white p-3.5 rounded-xl border border-stone-200 shadow-xs flex flex-col gap-3">
-                        {/* Slide Title & Thumbnail */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-stone-100 rounded-lg overflow-hidden border border-stone-200 flex-shrink-0 relative">
-                            <img
-                              src={photo.url}
-                              alt={`Slide ${i+1}`}
-                              className="w-full h-full object-cover"
-                              referrerPolicy="no-referrer"
-                            />
-                            <div className="absolute bottom-0 inset-x-0 bg-black/60 text-[8px] text-white py-0.5 text-center font-bold">
-                              Slide {i+1}
-                            </div>
-                          </div>
-                          
-                          <div className="flex-1 text-left">
-                            <h6 className="font-sans text-xs font-bold text-stone-800">
-                              🖼️ {i === 0 ? 'Seated Portrait (Wedding Sofa)' : i === 1 ? 'Cake Cutting Ceremony' : 'Sacred Wedding Vows'}
-                            </h6>
-                            <p className="text-[9px] text-stone-400 font-light">
-                              Customize the image display URL or upload a file
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Image Source Selection */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
-                          <div>
-                            <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                              Image Link (URL)
-                            </label>
-                            <input
-                              type="text"
-                              value={photo.url.startsWith('data:') ? '[Uploaded File/Base64 Image]' : photo.url}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                if (!val.startsWith('[Uploaded')) {
-                                  const updated = [...photos];
-                                  updated[i] = { ...updated[i], url: val };
-                                  if (onPhotosChange) onPhotosChange(updated);
-                                }
-                              }}
-                              placeholder="Paste picture internet URL..."
-                              className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 bg-stone-50/50 text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#aa771c]"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                              Or Upload File
-                            </label>
-                            <div className="relative">
-                              <input
-                                id={`file-input-${i}`}
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      if (event.target?.result) {
-                                        const updated = [...photos];
-                                        updated[i] = {
-                                          ...updated[i],
-                                          url: event.target.result as string
-                                        };
-                                        if (onPhotosChange) onPhotosChange(updated);
-                                      }
-                                    };
-                                    reader.readAsDataURL(file);
-                                  }
-                                }}
-                                className="hidden"
-                              />
-                              <label
-                                htmlFor={`file-input-${i}`}
-                                className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 bg-stone-50 hover:bg-stone-100/80 text-stone-700 cursor-pointer flex items-center justify-center gap-1.5 transition-colors font-medium"
-                              >
-                                <Upload className="w-3.5 h-3.5 text-[#aa771c]" /> Choose Image File
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Captions Inputs */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
-                          <div>
-                            <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                              English Description
-                            </label>
-                            <input
-                              type="text"
-                              value={photo.captionEn}
-                              onChange={(e) => {
-                                const updated = [...photos];
-                                updated[i] = { ...updated[i], captionEn: e.target.value };
-                                if (onPhotosChange) onPhotosChange(updated);
-                              }}
-                              placeholder="English caption..."
-                              className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#aa771c] bg-white text-stone-800"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                              Telugu Description (తెలుగు శీర్షిక)
-                            </label>
-                            <input
-                              type="text"
-                              value={photo.captionTe}
-                              onChange={(e) => {
-                                const updated = [...photos];
-                                updated[i] = { ...updated[i], captionTe: e.target.value };
-                                if (onPhotosChange) onPhotosChange(updated);
-                              }}
-                              placeholder="తెలుగు వివరణ రాయండి..."
-                              className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#aa771c] bg-white text-stone-800"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Background Music Customizer inside Dashboard */}
-                <div className="border border-amber-200 bg-amber-50/45 rounded-xl p-4 mt-4 space-y-4">
-                  <div className="flex items-center justify-between border-b border-amber-200/50 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <Music className="w-4 h-4 text-[#aa771c] animate-bounce" />
-                      <h5 className="font-display text-[#4A0404] text-[11px] uppercase font-bold tracking-wider">
-                        🎵 Background Song Music Customizer
-                      </h5>
-                    </div>
-                    {audioUrl && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (window.confirm("Restore default Kalyanam Vaibhogam wedding music?")) {
-                            if (onAudioChange) onAudioChange(null);
-                          }
-                        }}
-                        className="inline-flex items-center gap-1 text-[9px] bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-0.5 rounded transition-colors font-medium border border-[#D4AF37]/20 cursor-pointer"
-                      >
-                        <RotateCcw className="w-2.5 h-2.5" /> Reset Default Song
-                      </button>
-                    )}
-                  </div>
-
-                  <p className="text-[10px] text-stone-600 leading-relaxed text-left">
-                    Add the custom song you loaded! You can and should <strong>directly upload your favorite wedding song file (.mp3 / .wav)</strong> or paste an audio URL to load it immediately across the entire site!
-                  </p>
-
-                  <div className="bg-white p-3.5 rounded-xl border border-stone-200 shadow-xs space-y-3 text-left">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-1">
-                      <div>
-                        <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                          Paste Background Audio Link
-                        </label>
-                        <input
-                          type="text"
-                          value={audioUrl?.startsWith('data:') ? '[Uploaded Custom Music File]' : audioUrl}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (val && !val.startsWith('[Uploaded')) {
-                              if (onAudioChange) onAudioChange(val);
-                            }
-                          }}
-                          placeholder="Paste mp3 sound internet URL..."
-                          className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 bg-stone-50/50 text-stone-800 focus:outline-none focus:ring-1 focus:ring-[#aa771c]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[9px] font-bold text-stone-500 uppercase tracking-wider mb-1">
-                          Or Upload Your Song (.mp3/.wav/.ogg)
-                        </label>
-                        <div className="relative">
-                          <input
-                            id="dashboard-audio-upload-input"
-                            type="file"
-                            accept="audio/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (event) => {
-                                  if (event.target?.result) {
-                                    if (onAudioChange) onAudioChange(event.target.result as string);
-                                  }
-                                };
-                                reader.readAsDataURL(file);
-                              }
-                            }}
-                            className="hidden"
-                          />
-                          <label
-                            htmlFor="dashboard-audio-upload-input"
-                            className="w-full text-xs border border-stone-200 rounded-lg px-2.5 py-1.5 bg-stone-50 hover:bg-stone-100/80 text-stone-700 cursor-pointer flex items-center justify-center gap-1.5 transition-colors font-medium"
-                          >
-                            <Upload className="w-3.5 h-3.5 text-[#aa771c]" /> Select & Load Song File
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    {audioUrl ? (
-                      <div className="flex items-center gap-2 p-2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-semibold">
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Active Custom Wedding Track loaded and active in the music player! Custom song plays beautifully!</span>
-                      </div>
-                    ) : (
-                      <div className="text-[10px] text-stone-400 font-light italic">
-                        No custom track uploaded yet. Currently playing the 'Kalyanam Vaibhogam' theme song.
-                      </div>
-                    )}
-                  </div>
-                </div>
 
               </div>
             )}

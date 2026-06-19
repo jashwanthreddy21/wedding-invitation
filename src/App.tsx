@@ -1325,10 +1325,6 @@ export default function App() {
           {/* 13. HOST ANALYTICS PERSISTENCE VIEW (At back-end floor) */}
           <HostDashboard 
             onRSVPUpdateTrigger={rsvpUpdateCounter} 
-            photos={photos} 
-            onPhotosChange={handlePhotosChange} 
-            audioUrl={customAudio}
-            onAudioChange={handleAudioChange}
           />
 
         </div>
