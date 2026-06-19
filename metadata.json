@@ -1,0 +1,6 @@
+{
+  "name": "Wedding Invitation",
+  "description": "An elegant, interactive wedding invitation for Sprudhar & Preethi, featuring a gate-opening entrance, floating particles, scratch-to-reveal invite details, live countdown timer, bilingual English/Telugu translation toggles, responsive pre-wedding schedules (Sangeet, Haldi & Groom ceremonies), map integration, and an RSVP forwarding system sending responses to 9000633955.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
